@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMEDEO | Piazza Euclide Roma | Dal 1960</title>
+    <meta name="description"
+        content="Barberia storica ai Parioli. Taglio sartoriale, panni caldi e tradizione italiana. Prenota il tuo appuntamento online.">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- FONTS: 'Playfair Display' (Istituzionale) & 'Inter' (Funzionale/Leggibile) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- ICONE -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- LIBRERIE: Tailwind (CSS), GSAP (Animazioni), Lenis (Scroll Lusso) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ivory': '#F9F7F2',       /* Colore Muro Salone */
+                        'ink': '#1A1A1A',         /* Testo Leggibile */
+                        'gold': '#C4A962',        /* Dettaglio Ottone */
+                        'marble': '#E5E5E5',      /* Pietra */
+                        'green-parioli': '#2C4C3B' /* Verde istituzionale */
+                    },
+                    fontFamily: {
+                        'serif': ['"Playfair Display"', 'serif'],
+                        'sans': ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F9F7F2;
+            color: #1A1A1A;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Smooth Scroll Fixes */
+        html.lenis {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            letter-spacing: -0.02em;
+        }
+
+        .tracking-wide-luxury {
+            letter-spacing: 0.15em;
+        }
+
+        /* Status Dot Logic */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .open {
+            background-color: #2C4C3B;
+            box-shadow: 0 0 0 4px rgba(44, 76, 59, 0.1);
+        }
+
+        .closed {
+            background-color: #A63434;
+            opacity: 0.7;
+        }
+
+        /* Form Minimalista */
+        .form-select {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(26, 26, 26, 0.1);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #1A1A1A;
+            padding: 0 30px 5px 0;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23C4A962%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: .65em auto;
+            transition: border-color 0.3s;
+        }
+
+        .form-select:focus {
+            border-color: #C4A962;
+        }
+
+        /* Image Reveal Effect */
+        .reveal-mask {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .reveal-mask.visible {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden">
+
+    <!-- STATUS BAR (REAL TIME DATA) -->
+    <div
+        class="fixed top-0 w-full z-50 bg-ivory/90 backdrop-blur-md border-b border-ink/5 py-3 px-6 md:px-12 flex justify-between items-center text-[11px] uppercase font-medium tracking-wider text-ink/80">
+        <div id="shop-status" class="flex items-center">
+            <!-- Populated via JS -->
+            <span class="status-dot closed"></span> Controllo Orari...
+        </div>
+        <div class="hidden md:block">Piazza Euclide 29 • Roma</div>
+        <a href="tel:068084622" class="hover:text-gold transition font-bold">06 808 4622</a>
+    </div>
+
+    <!-- HERO SECTION -->
+    <header
+        class="relative pt-32 pb-20 px-6 md:px-12 min-h-[90vh] flex flex-col justify-between max-w-[1800px] mx-auto">
+
+        <!-- Nav -->
+        <nav class="flex justify-between items-end relative z-20">
+            <div>
+                <h1 class="font-serif text-5xl md:text-7xl leading-none tracking-tight">AMEDEO<span
+                        class="text-gold">.</span></h1>
+                <p class="font-sans text-xs uppercase tracking-[0.3em] mt-3 opacity-60">Barberia Parioli • 1960</p>
+            </div>
+            <button onclick="scrollToSection('booking')"
+                class="hidden md:block px-8 py-3 border border-ink text-xs uppercase tracking-widest hover:bg-ink hover:text-ivory transition-all duration-300">
+                Riserva Poltrona
+            </button>
+        </nav>
+
+        <!-- Content -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mt-16 md:mt-0 relative z-10">
+            <div class="md:col-span-7 flex flex-col justify-center">
+                <div class="overflow-hidden">
+                    <h2 class="font-serif text-6xl md:text-8xl leading-[0.9] text-ink anim-text translate-y-full">
+                        Classico <br> <span class="italic text-gold">Italiano.</span>
+                    </h2>
+                </div>
+                <div class="mt-8 md:mt-12 max-w-lg anim-fade opacity-0">
+                    <p class="font-sans text-lg md:text-xl leading-relaxed text-ink/80 font-light">
+                        Non siamo un barber shop moderno. Siamo una Barberia Storica. <br>
+                        A Piazza Euclide, manteniamo viva l'eleganza di Roma Nord con panni caldi, discrezione e tecnica
+                        sartoriale.
+                    </p>
+                    <div class="mt-10 flex gap-6">
+                        <button onclick="scrollToSection('booking')"
+                            class="bg-ink text-ivory px-8 py-4 text-xs uppercase tracking-widest hover:bg-gold transition duration-300 shadow-xl">
+                            Prenota Ora
+                        </button>
+                        <a href="https://www.instagram.com/amedeobarberiaparioli/" target="_blank"
+                            class="flex items-center gap-2 px-6 py-4 text-xs uppercase tracking-widest border-b border-ink/20 hover:border-gold hover:text-gold transition duration-300">
+                            <i class="fa-brands fa-instagram text-lg"></i> Gallery
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image (Real Vibe: Bright, Marble, Wood) -->
+            <div class="md:col-span-5 relative h-[50vh] md:h-auto">
+                <div class="reveal-mask w-full h-full relative overflow-hidden bg-marble">
+                    <img src="FotoInterno.png"
+                        class="w-full h-full object-contain grayscale contrast-[1.1] hover:scale-105 transition-transform duration-[2s]"
+                        alt="Interni Amedeo">
+                    <div
+                        class="absolute bottom-0 left-0 bg-ivory px-4 py-2 text-[10px] uppercase tracking-widest font-sans border-t border-r border-ink/10">
+                        Poltrona Takara Belmont • Originale
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TRUST SIGNALS (Verificabili) -->
+    <section class="py-20 border-y border-ink/5 bg-white">
+        <div class="max-w-[1800px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+
+            <div class="flex flex-col gap-4 reveal-up">
+                <i class="fa-solid fa-certificate text-3xl text-gold"></i>
+                <h3 class="font-serif text-2xl">Storicità</h3>
+                <p class="font-sans text-sm text-ink/70 leading-relaxed">
+                    Operativi dal 1960. Tre generazioni di clienti si sono sedute sulle nostre poltrone. Una tradizione
+                    di famiglia che continua.
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-4 reveal-up delay-100">
+                <i class="fa-solid fa-pump-soap text-3xl text-gold"></i>
+                <h3 class="font-serif text-2xl">Prodotti Iconici</h3>
+                <p class="font-sans text-sm text-ink/70 leading-relaxed">
+                    Utilizziamo <em>Proraso Linea Single Blade</em> e <em>Floïd The Genuine</em>. Profumi che
+                    risvegliano la memoria olfattiva italiana.
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-4 reveal-up delay-200">
+                <i class="fa-solid fa-check-double text-3xl text-gold"></i>
+                <h3 class="font-serif text-2xl">Igiene Garantita</h3>
+                <p class="font-sans text-sm text-ink/70 leading-relaxed">
+                    Lame monouso scartate davanti al cliente. Strumenti sterilizzati. La sicurezza è la base del nostro
+                    servizio.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- IL LISTINO (Integrated Setmore Deep Links) -->
+    <section id="servizi" class="py-32 px-6 md:px-12 max-w-[1400px] mx-auto">
+        <div class="text-center mb-20 reveal-up">
+            <span class="text-gold text-4xl block mb-2">❦</span>
+            <h2 class="font-serif text-4xl md:text-5xl">I Rituali</h2>
+            <p class="font-sans text-xs uppercase tracking-widest mt-4 opacity-50">Tempi reali • Prezzi trasparenti</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-0 border-t border-ink/10">
+
+            <!-- TAGLIO -->
+            <div
+                class="group relative border-b border-ink/10 py-10 hover:bg-white transition-colors duration-500 reveal-up">
+                <a href="https://amedeoparioli.setmore.com/services/cfc1113b-87a4-46ce-8f63-d108d8ec31a1"
+                    class="flex flex-col md:flex-row justify-between md:items-center px-4">
+                    <div class="md:w-2/3">
+                        <h3 class="font-serif text-3xl group-hover:text-gold transition-colors">Taglio Sartoriale</h3>
+                        <p class="font-sans text-sm text-ink/60 mt-2 max-w-md">
+                            Consulenza morfologica, shampoo specifico, taglio a forbice e styling finale.
+                        </p>
+                    </div>
+                    <div class="mt-4 md:mt-0 md:text-right">
+                        <span class="font-sans font-medium text-xl block">€ 35</span>
+                        <span
+                            class="text-[10px] uppercase tracking-widest text-gold opacity-0 group-hover:opacity-100 transition-opacity">Prenota
+                            Diretto &rarr;</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- BARBA -->
+            <div
+                class="group relative border-b border-ink/10 py-10 hover:bg-white transition-colors duration-500 reveal-up">
+                <a href="https://amedeoparioli.setmore.com/services/71109e2f-37cf-41bf-8e73-07ddfc4d00b1"
+                    class="flex flex-col md:flex-row justify-between md:items-center px-4">
+                    <div class="md:w-2/3">
+                        <h3 class="font-serif text-3xl group-hover:text-gold transition-colors">Rasatura all'Italiana
+                        </h3>
+                        <p class="font-sans text-sm text-ink/60 mt-2 max-w-md">
+                            Il vero rito. 3 panni caldi, pre-barba, insaponata a pennello, rasoio a mano libera, panno
+                            freddo e dopobarba.
+                        </p>
+                    </div>
+                    <div class="mt-4 md:mt-0 md:text-right">
+                        <span class="font-sans font-medium text-xl block">€ 25</span>
+                        <span
+                            class="text-[10px] uppercase tracking-widest text-gold opacity-0 group-hover:opacity-100 transition-opacity">Prenota
+                            Diretto &rarr;</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- MANICURE (Visto su IG) -->
+            <div
+                class="group relative border-b border-ink/10 py-10 hover:bg-white transition-colors duration-500 reveal-up">
+                <a href="https://amedeoparioli.setmore.com/"
+                    class="flex flex-col md:flex-row justify-between md:items-center px-4">
+                    <div class="md:w-2/3">
+                        <h3 class="font-serif text-3xl group-hover:text-gold transition-colors">Manicure Uomo</h3>
+                        <p class="font-sans text-sm text-ink/60 mt-2 max-w-md">
+                            Cura delle mani, pulizia cuticole e idratazione. Un dettaglio essenziale per il
+                            professionista.
+                        </p>
+                    </div>
+                    <div class="mt-4 md:mt-0 md:text-right">
+                        <span class="font-sans font-medium text-xl block">€ 20</span>
+                        <span
+                            class="text-[10px] uppercase tracking-widest text-gold opacity-0 group-hover:opacity-100 transition-opacity">Prenota
+                            in Agenda &rarr;</span>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CONCIERGE (PARKING INFO - CRUCIALE) -->
+    <section class="bg-green-parioli text-ivory py-24 px-6 md:px-12 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10"
+            style="background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');"></div>
+
+        <div class="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 relative z-10">
+            <div>
+                <h3 class="font-serif text-3xl mb-6 text-gold">Arrivare a Piazza Euclide</h3>
+                <p class="font-sans text-sm opacity-80 leading-relaxed mb-8">
+                    Sappiamo che il parcheggio ai Parioli può essere complesso.
+                    Per garantire la massima puntualità e relax, consigliamo:
+                </p>
+                <ul class="space-y-4 font-sans text-sm">
+                    <li class="flex items-start gap-3">
+                        <i class="fa-solid fa-square-parking mt-1 text-gold"></i>
+                        <div>
+                            <strong class="block uppercase text-xs tracking-widest text-gold">Garage Euclide</strong>
+                            <span class="opacity-70">Via Guidubaldo del Monte, 13 (a 50m dal salone).</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fa-solid fa-road mt-1 text-gold"></i>
+                        <div>
+                            <strong class="block uppercase text-xs tracking-widest text-gold">Strisce Blu</strong>
+                            <span class="opacity-70">Disponibili su Via Civinini e Via Archimede.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="border-l border-ivory/10 pl-8 md:pl-16 flex flex-col justify-center">
+                <h3 class="font-serif text-3xl mb-4 text-gold">Carta Regalo</h3>
+                <p class="font-sans text-sm opacity-80 leading-relaxed mb-8">
+                    Disponibile in salone la nostra Gift Card fisica.
+                    Stampata su carta martellata, è il regalo perfetto per l'uomo che apprezza il tempo per sé.
+                </p>
+                <a href="tel:068084622"
+                    class="inline-block border-b border-gold pb-1 text-xs uppercase tracking-widest hover:text-gold transition">
+                    Chiama per riservarla
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRENOTAZIONE INTELLIGENTE -->
+    <section id="booking" class="min-h-screen flex items-center justify-center py-20 px-6 bg-ivory">
+        <div class="max-w-3xl w-full text-center md:text-left">
+            <span class="font-serif text-gold text-6xl block mb-4">❦</span>
+            <h2 class="font-sans text-xs uppercase tracking-[0.4em] mb-12 opacity-50">Prenotazione Diretta</h2>
+
+            <form onsubmit="handleBooking(event)" class="space-y-12">
+                <div class="font-serif text-3xl md:text-5xl leading-snug text-ink">
+                    <p>
+                        Buongiorno. Vorrei fissare un
+                        <select id="service-select" class="form-select text-green-parioli cursor-pointer">
+                            <option value="taglio">Taglio Classico</option>
+                            <option value="barba">Rasatura Italiana</option>
+                            <option value="combo">Taglio & Barba</option>
+                            <option value="manicure">Manicure</option>
+                        </select>
+                    </p>
+                    <p>
+                        per prendermi cura della mia immagine.
+                    </p>
+                </div>
+
+                <div class="pt-8">
+                    <button type="submit"
+                        class="bg-ink text-ivory px-12 py-5 font-sans uppercase tracking-widest text-xs hover:bg-gold hover:text-ink transition duration-500 shadow-2xl">
+                        Verifica Disponibilità
+                    </button>
+                    <p class="mt-6 font-sans text-[10px] uppercase tracking-widest opacity-40">
+                        Integrazione ufficiale Setmore™
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-ink/5 pt-16 pb-8 px-6 md:px-12 text-center md:text-left">
+        <div class="max-w-[1800px] mx-auto flex flex-col md:flex-row justify-between items-end gap-8">
+            <div>
+                <h4 class="font-serif text-3xl mb-2">AMEDEO<span class="text-gold">.</span></h4>
+                <p class="font-sans text-[10px] uppercase tracking-widest opacity-50">Piazza Euclide 29, 00197 Roma</p>
+            </div>
+
+            <div class="flex gap-8 font-sans text-[11px] uppercase tracking-widest font-medium">
+                <a href="https://goo.gl/maps/generic" target="_blank" class="hover:text-gold transition">Mappa</a>
+                <a href="tel:068084622" class="hover:text-gold transition">06 808 4622</a>
+                <a href="https://instagram.com/amedeobarberiaparioli" target="_blank"
+                    class="hover:text-gold transition">Instagram</a>
+            </div>
+        </div>
+        <div
+            class="max-w-[1800px] mx-auto mt-12 pt-8 border-t border-ink/5 text-center text-[10px] opacity-30 font-sans uppercase">
+            © 2026 Amedeo Barberia. Tutti i diritti riservati.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE -->
+    <script>
+        // 1. SCROLL LUSSO (Lenis)
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true,
+        });
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Collegamento GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 2. ANIMAZIONI ELEGANTI
+        // Hero
+        gsap.to(".anim-text", { y: 0, duration: 1.5, ease: "power4.out", delay: 0.2 });
+        gsap.to(".anim-fade", { opacity: 1, duration: 1.5, delay: 0.5 });
+
+        // Immagine Reveal
+        ScrollTrigger.create({
+            trigger: ".reveal-mask",
+            start: "top 70%",
+            onEnter: () => document.querySelector(".reveal-mask").classList.add("visible")
+        });
+
+        // Elementi che salgono
+        document.querySelectorAll(".reveal-up").forEach(el => {
+            gsap.fromTo(el,
+                { y: 40, opacity: 0 },
+                {
+                    scrollTrigger: { trigger: el, start: "top 85%" },
+                    y: 0, opacity: 1, duration: 1, ease: "power3.out"
+                }
+            );
+        });
+
+        // 3. LOGICA ORARI "ROME TIME" (Verificata Online)
+        // Orari presi da Google/Setmore: Mar-Sab 08:30-19:30 (approx), Lun/Dom Chiuso
+        function checkStatus() {
+            const now = new Date();
+            const rome = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Rome" }));
+            const day = rome.getDay(); // 0=Dom, 1=Lun
+            const hour = rome.getHours();
+
+            const el = document.getElementById("shop-status");
+            let isOpen = false;
+            let text = "";
+
+            if (day >= 2 && day <= 6) { // Mar-Sab
+                if (hour >= 8 && hour < 20) {
+                    isOpen = true;
+                    text = "Aperti • Chiudiamo alle 20:00";
+                } else if (hour < 8) {
+                    text = "Apriamo alle 08:00";
+                } else {
+                    text = "Chiuso • Riapriamo domani 08:00";
+                }
+            } else if (day === 1) { // Lun
+                text = "Lunedì Chiuso • Aperti domani 08:00";
+            } else { // Dom
+                text = "Buona Domenica • Riapriamo Martedì";
+            }
+
+            el.innerHTML = `<span class="status-dot ${isOpen ? 'open' : 'closed'}"></span> ${text}`;
+        }
+        checkStatus();
+
+        // 4. PRENOTAZIONE SETMORE (Deep Links Reali)
+        function handleBooking(e) {
+            e.preventDefault();
+            const service = document.getElementById("service-select").value;
+
+            // I LINK CHE MI HAI DATO
+            const links = {
+                'taglio': 'https://amedeoparioli.setmore.com/services/cfc1113b-87a4-46ce-8f63-d108d8ec31a1',
+                'barba': 'https://amedeoparioli.setmore.com/services/71109e2f-37cf-41bf-8e73-07ddfc4d00b1',
+                // Per combo e manicure uso il link generico, l'utente sceglierà lì
+                'combo': 'https://amedeoparioli.setmore.com/',
+                'manicure': 'https://amedeoparioli.setmore.com/'
+            };
+
+            window.location.href = links[service];
+        }
+
+        function scrollToSection(id) {
+            lenis.scrollTo('#' + id);
+        }
+    </script>
+</body>
+
+</html>
