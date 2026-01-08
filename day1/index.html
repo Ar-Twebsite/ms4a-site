@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 1: Money, Sin, and a Big Hole in the Roof | ms4a</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FFFFFF;
+            --text-main: #0A192F;
+            --text-muted: #526580;
+            --primary-yellow: #FFC800;
+            --yellow-shadow: #E5B400;
+            --accent-blue: #1CB0F6;
+            --accent-red: #FF4B4B;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E5E5;
+            --btn-text: #0A192F;
+            --testimonial-bg: #FAFAFA;
+            --container-max: 1200px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0A192F;
+                --text-main: #FFFFFF;
+                --text-muted: #A0B1C5;
+                --primary-yellow: #FFD900;
+                --yellow-shadow: #BFA300;
+                --accent-blue: #40C4FF;
+                --card-bg: #112240;
+                --border-color: #233554;
+                --btn-text: #0A192F;
+                --testimonial-bg: #15233b;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 { font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; }
+        .logo .yellow-4 { color: #FFC800; }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--primary-yellow);
+            color: var(--btn-text);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 4px solid var(--yellow-shadow);
+            transition: transform 0.1s, filter 0.2s;
+            cursor: pointer;
+        }
+        .btn:active { transform: translateY(4px); border-bottom-width: 0; }
+        .btn:hover { filter: brightness(1.1); }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 0 var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: var(--border-color);
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-yellow);
+            width: 14.28%; /* 1/7 */
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+        .question label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .question input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .result {
+            margin-top: 2rem;
+            font-weight: 800;
+        }
+
+        .part {
+            display: none;
+        }
+        .part.active {
+            display: block;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">ms<span class="yellow-4">4</span>a</div>
+        <a href="../" class="btn">Home</a>
+    </nav>
+
+    <section class="container">
+        <h1>Day 1: Money, Sin, and a Big Hole in the Roof</h1>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div id="content">
+            <div class="part active" id="part1">
+                <div class="card">
+                    <h2>📜 Part 1: The Context (The Bankers of God)</h2>
+                    <p>Reading Time: 5 Minutes</p>
+                    <h3>The History</h3>
+                    <p>It is the year 1400. Forget Italy as a country; it doesn't exist yet. It is a collection of fighting city-states.</p>
+                    <p>Rome is a ruin (literally cows grazing in the Forum). But Florence is different. Florence is becoming the engine of Europe. Why? Wool and Money.</p>
+                    <h3>The Power Shift</h3>
+                    <p>A new family is rising: The Medici.</p>
+                    <p>They aren't royalty. They are bankers. In the Middle Ages, banking was a sin called "Usury" (making money from money). According to the Church, if you charged interest, you went to Hell.</p>
+                    <p>The Medici found a loophole: "We aren't charging interest; we are taking a 'commission' for currency exchange."</p>
+                    <p>They became the richest family in Europe. But they had a problem: Guilt. They were terrified of eternal damnation.</p>
+                    <h3>The Solution</h3>
+                    <p>To buy their way into Heaven, they started pouring millions into the Church and into Art. The Renaissance didn't start because everyone suddenly got creative; it started because rich bankers needed to clean their conscience.</p>
+                    <h3>Checkpoint Question</h3>
+                    <p>Why was the Renaissance funded mostly by bankers?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="checkpoint" value="a"> They loved pretty colors.</label>
+                        <label class="option"><input type="radio" name="checkpoint" value="b"> To atone for the sin of Usury (Charging interest).</label>
+                        <label class="option"><input type="radio" name="checkpoint" value="c"> The King forced them to.</label>
+                    </div>
+                    <button type="button" class="btn" onclick="checkCheckpoint()">Check Answer</button>
+                    <div id="checkpoint-result" class="result"></div>
+                </div>
+            </div>
+
+            <div class="part" id="part2">
+                <div class="card">
+                    <h2>🗣️ Part 2: The Drama (The Egg & The Rivalry)</h2>
+                    <p>Reading Time: 5 Minutes</p>
+                    <h3>The Scandal</h3>
+                    <p>Florence had a massive cathedral, but it had no roof. For decades, rain rained right onto the altar. It was a humiliation. The hole was too big (150 feet wide), and no one knew how to build a dome that wouldn't collapse under its own weight.</p>
+                    <h3>The Contest (1418)</h3>
+                    <p>The city held a competition. Two men entered:</p>
+                    <p>Lorenzo Ghiberti: The famous, polished, well-dressed golden boy.</p>
+                    <p>Filippo Brunelleschi: Short, bald, dirty, and known for having a terrible temper.</p>
+                    <h3>The "Egg" Moment</h3>
+                    <p>The judges asked Brunelleschi to show his plans. He refused, fearing Ghiberti would steal them. Instead, he challenged them: "Whoever can make an egg stand upright on the marble table gets the commission."</p>
+                    <p>Everyone tried and failed. The egg kept rolling over.</p>
+                    <p>Brunelleschi took the egg, smashed the bottom on the table, and it stood upright.</p>
+                    <p>The judges yelled, "We could have done that!"</p>
+                    <p>Brunelleschi replied, "You could have built the dome, too, had you known how."</p>
+                    <p>He got the job. But the city forced him to work with his rival, Ghiberti. Brunelleschi hated this so much he faked being sick for weeks just to prove Ghiberti couldn't do the math without him.</p>
+                </div>
+            </div>
+
+            <div class="part" id="part3">
+                <div class="card">
+                    <h2>🎨 Part 3: The Masterpiece (The Duomo)</h2>
+                    <p>Reading Time: 10 Minutes</p>
+                    <h3>The Work: The Dome of Santa Maria del Fiore</h3>
+                    <p>The Artist: Filippo Brunelleschi</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Duomo_di_Firenze.jpg/800px-Duomo_di_Firenze.jpg" alt="Duomo of Florence" style="max-width: 100%; height: auto; border-radius: 10px; margin: 1rem 0;">
+                    <h3>Visual Decoding</h3>
+                    <p>Look at the Dome. It isn't a circle; it's an octagon.</p>
+                    <p>Brunelleschi solved the physics problem by building two domes:</p>
+                    <p>An inner shell (thick) to hold the weight.</p>
+                    <p>An outer shell (thin) to protect against wind and rain.</p>
+                    <p>In between them, there are stairs. He literally built a dome inside a dome.</p>
+                    <h3>The Innovation</h3>
+                    <p>He invented a "Herringbone" brick pattern (zigzag). If you lay bricks horizontally, they fall in. If you lock them vertically (zigzag), gravity holds them in place while the mortar dries.</p>
+                    <p>He built the largest masonry dome in the world without any scaffolding. It is still the largest brick dome on earth today.</p>
+                    <h3>Your "Cocktail Party" Fact</h3>
+                    <p>Brunelleschi didn't just build the dome; he invented the machines to build it. He created the world's first reverse-gear hoist (using oxen) so they didn't have to unhitch the animals to bring the load down. He also invented a cafeteria on the roof so workers wouldn't waste time walking down for lunch. He was the Elon Musk of 1420.</p>
+                </div>
+            </div>
+
+            <div class="part" id="challenge">
+                <div class="card">
+                    <h2>⚔️ The Day 1 Challenge (Active Recall)</h2>
+                    <p>If you pass this, you unlock Day 2.</p>
+                    <form id="quiz">
+                        <div class="question">
+                            <label>The Motivation: Why did the Medici spend so much money on art?</label>
+                            <label class="option"><input type="radio" name="q1" value="a"> They loved pretty colors.</label>
+                            <label class="option"><input type="radio" name="q1" value="b"> To atone for the sin of Usury (Charging interest).</label>
+                            <label class="option"><input type="radio" name="q1" value="c"> The King forced them to.</label>
+                        </div>
+                        <div class="question">
+                            <label>The Physics: What pattern of bricks did Brunelleschi use to stop the dome from falling?</label>
+                            <label class="option"><input type="radio" name="q2" value="a"> Horizontal straight lines.</label>
+                            <label class="option"><input type="radio" name="q2" value="b"> Herringbone (zigzag).</label>
+                            <label class="option"><input type="radio" name="q2" value="c"> Circular pattern.</label>
+                        </div>
+                        <div class="question">
+                            <label>The Identity: The Renaissance shifted focus from "God centered" to...</label>
+                            <label class="option"><input type="radio" name="q3" value="a"> Money centered.</label>
+                            <label class="option"><input type="radio" name="q3" value="b"> Human centered (Humanism).</label>
+                            <label class="option"><input type="radio" name="q3" value="c"> Art centered.</label>
+                        </div>
+                        <button type="button" class="btn" onclick="submitQuiz()">Submit Answers</button>
+                    </form>
+                    <div id="result" class="result"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="prevBtn" class="btn" onclick="prevPart()" style="display: none;">Previous</button>
+            <button id="nextBtn" class="btn" onclick="nextPart()">Next</button>
+        </div>
+    </section>
+
+    <script>
+        let currentPart = 0;
+        const parts = ['part1', 'part2', 'part3', 'challenge'];
+
+        function showPart(index) {
+            document.querySelectorAll('.part').forEach(p => p.classList.remove('active'));
+            document.getElementById(parts[index]).classList.add('active');
+            document.getElementById('prevBtn').style.display = index > 0 ? 'inline-flex' : 'none';
+            document.getElementById('nextBtn').style.display = index < parts.length - 1 ? 'inline-flex' : 'none';
+            const progress = ((index + 1) / parts.length) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        }
+
+        function nextPart() {
+            if (currentPart < parts.length - 1) {
+                currentPart++;
+                showPart(currentPart);
+            }
+        }
+
+        function prevPart() {
+            if (currentPart > 0) {
+                currentPart--;
+                showPart(currentPart);
+            }
+        }
+
+        function submitQuiz() {
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+            if (!q1 || !q2 || !q3) {
+                document.getElementById('result').innerHTML = '<p style="color: var(--accent-red);">Please answer all questions!</p>';
+                return;
+            }
+            let correct = 0;
+            if (q1 === 'b') correct++;
+            if (q2 === 'b') correct++;
+            if (q3 === 'b') correct++;
+            const result = document.getElementById('result');
+            result.innerHTML = `<p>You got ${correct}/3 correct.</p>`;
+            if (correct === 3) {
+                result.innerHTML += '<p style="color: var(--accent-blue);">Perfect! You unlocked Day 2. <a href="../day2/">Go to Day 2</a></p>';
+            } else {
+                result.innerHTML += '<p style="color: var(--accent-red);">Try again!</p>';
+            }
+        }
+
+        function checkCheckpoint() {
+            const answer = document.querySelector('input[name="checkpoint"]:checked')?.value;
+            const result = document.getElementById('checkpoint-result');
+            if (!answer) {
+                result.innerHTML = '<p style="color: var(--accent-red);">Please select an answer!</p>';
+                return;
+            }
+            if (answer === 'b') {
+                result.innerHTML = '<p style="color: var(--accent-blue);">Correct! You can proceed to Part 2.</p>';
+                document.getElementById('nextBtn').style.display = 'inline-flex';
+            } else {
+                result.innerHTML = '<p style="color: var(--accent-red);">Not quite. Try again!</p>';
+            }
+        }
+
+        showPart(0);
+    </script>
+</body>
+</html>
