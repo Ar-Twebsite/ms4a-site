@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5: The Ceiling of Hell | ms4a</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FFFFFF;
+            --text-main: #0A192F;
+            --text-muted: #526580;
+            --primary-yellow: #FFC800;
+            --yellow-shadow: #E5B400;
+            --accent-blue: #1CB0F6;
+            --accent-red: #FF4B4B;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E5E5;
+            --btn-text: #0A192F;
+            --testimonial-bg: #FAFAFA;
+            --container-max: 1200px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0A192F;
+                --text-main: #FFFFFF;
+                --text-muted: #A0B1C5;
+                --primary-yellow: #FFD900;
+                --yellow-shadow: #BFA300;
+                --accent-blue: #40C4FF;
+                --card-bg: #112240;
+                --border-color: #233554;
+                --btn-text: #0A192F;
+                --testimonial-bg: #15233b;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 { font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; }
+        .logo .yellow-4 { color: #FFC800; }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--primary-yellow);
+            color: var(--btn-text);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 4px solid var(--yellow-shadow);
+            transition: transform 0.1s, filter 0.2s;
+            cursor: pointer;
+        }
+        .btn:active { transform: translateY(4px); border-bottom-width: 0; }
+        .btn:hover { filter: brightness(1.1); }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 0 var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: var(--border-color);
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-yellow);
+            width: 14.28%; /* 1/7 */
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+        .question label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .question input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .result {
+            margin-top: 2rem;
+            font-weight: 800;
+        }
+
+        .part {
+            display: none;
+        }
+        .part.active {
+            display: block;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">ms<span class="yellow-4">4</span>a</div>
+        <a href="../" class="btn">Home</a>
+    </nav>
+
+    <section class="container">
+        <h1>Day 5: The Ceiling of Hell</h1>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div id="content">
+            <div class="part active" id="part1">
+                <div class="card">
+                    <h2>📜 Part 1: The Context (The Warrior Pope)</h2>
+                    <p>Reading Time: 5 Minutes</p>
+                    <h3>The History</h3>
+                    <p>Rome is back. The new Pope is Julius II. He doesn't pray much; he leads armies. He wants to rebuild Rome to be greater than the ancient Empire.</p>
+                    <h3>The Power Shift</h3>
+                    <p>Julius forces Michelangelo to come to Rome. Michelangelo wants to carve the Pope's tomb (a massive project).</p>
+                    <p>The Pope changes his mind. "Paint the ceiling of my chapel instead."</p>
+                    <p>Michelangelo says no. "I am a sculptor, not a painter."</p>
+                    <p>The Pope says: "Do it or go to jail."</p>
+                </div>
+            </div>
+
+            <div class="part" id="part2">
+                <div class="card">
+                    <h2>🗣️ Part 2: The Drama (The Agony)</h2>
+                    <p>Reading Time: 5 Minutes</p>
+                    <h3>The Scandal</h3>
+                    <p>Michelangelo hated every minute of it. He fired all his assistants because they weren't good enough. He locked the doors.</p>
+                    <p>He did NOT lie on his back. He stood up, head tilted back, for 4 years.</p>
+                    <p>Paint dripped into his eyes. His back grew curved. He wrote a poem about how his "brush was dripping on his face" and his "intestines were crushed."</p>
+                    <p>He constantly fought with the Pope. The Pope hit him with a cane once. Michelangelo threatened to leave. It was a toxic relationship that created beauty.</p>
+                </div>
+            </div>
+
+            <div class="part" id="part3">
+                <div class="card">
+                    <h2>🎨 Part 3: The Masterpiece (The Spark)</h2>
+                    <p>Reading Time: 10 Minutes</p>
+                    <h3>The Work: The Creation of Adam (Sistine Chapel Ceiling)</h3>
+                    <p>The Artist: Michelangelo</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/800px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg" alt="The Creation of Adam" style="max-width: 100%; height: auto; border-radius: 10px; margin: 1rem 0;">
+                    <h3>Visual Decoding</h3>
+                    <p>Focus on the hands. God is rushing in (hair blowing). Adam is lazy, limp on the earth.</p>
+                    <p>The fingers do not touch.</p>
+                    <p>That inch of space is the most important space in art history. It represents the "spark" of life passing from divine to human. If they touched, it would just be a handshake. The gap creates the tension.</p>
+                    <h3>Your "Cocktail Party" Fact</h3>
+                    <p>Michelangelo painted God's brain in the shape of... a human brain. If you outline the cloud around God, it perfectly matches the anatomical cross-section of a human brain. Was he saying God is a product of the human mind?</p>
+                </div>
+            </div>
+
+            <div class="part" id="challenge">
+                <div class="card">
+                    <h2>⚔️ The Day 5 Challenge (Active Recall)</h2>
+                    <p>If you pass this, you unlock Day 6.</p>
+                    <form id="quiz">
+                        <div class="question">
+                            <label>The Profession: What was Michelangelo's main excuse for refusing the job?</label>
+                            <label class="option"><input type="radio" name="q1" value="a"> I am too expensive.</label>
+                            <label class="option"><input type="radio" name="q1" value="b"> I am a sculptor, not a painter.</label>
+                            <label class="option"><input type="radio" name="q1" value="c"> I am sick.</label>
+                        </div>
+                        <div class="question">
+                            <label>The Myth: How did he paint the ceiling?</label>
+                            <label class="option"><input type="radio" name="q2" value="a"> Lying on his back.</label>
+                            <label class="option"><input type="radio" name="q2" value="b"> Standing with head tilted back.</label>
+                            <label class="option"><input type="radio" name="q2" value="c"> Hanging from a rope.</label>
+                        </div>
+                        <div class="question">
+                            <label>The Detail: What is significant about the fingers of God and Adam?</label>
+                            <label class="option"><input type="radio" name="q3" value="a"> They are holding hands.</label>
+                            <label class="option"><input type="radio" name="q3" value="b"> They do not touch.</label>
+                            <label class="option"><input type="radio" name="q3" value="c"> Adam is pushing God away.</label>
+                        </div>
+                        <button type="button" class="btn" onclick="submitQuiz()">Submit Answers</button>
+                    </form>
+                    <div id="result" class="result"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="prevBtn" class="btn" onclick="prevPart()" style="display: none;">Previous</button>
+            <button id="nextBtn" class="btn" onclick="nextPart()">Next</button>
+        </div>
+    </section>
+
+    <script>
+        let currentPart = 0;
+        const parts = ['part1', 'part2', 'part3', 'challenge'];
+
+        function showPart(index) {
+            document.querySelectorAll('.part').forEach(p => p.classList.remove('active'));
+            document.getElementById(parts[index]).classList.add('active');
+            document.getElementById('prevBtn').style.display = index > 0 ? 'inline-flex' : 'none';
+            document.getElementById('nextBtn').style.display = index < parts.length - 1 ? 'inline-flex' : 'none';
+            const progress = ((index + 1) / parts.length) * 100;
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        }
+
+        function nextPart() {
+            if (currentPart < parts.length - 1) {
+                currentPart++;
+                showPart(currentPart);
+            }
+        }
+
+        function prevPart() {
+            if (currentPart > 0) {
+                currentPart--;
+                showPart(currentPart);
+            }
+        }
+
+        function submitQuiz() {
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+            if (!q1 || !q2 || !q3) {
+                document.getElementById('result').innerHTML = '<p style="color: var(--accent-red);">Please answer all questions!</p>';
+                return;
+            }
+            let correct = 0;
+            if (q1 === 'b') correct++;
+            if (q2 === 'b') correct++;
+            if (q3 === 'b') correct++;
+            const result = document.getElementById('result');
+            result.innerHTML = `<p>You got ${correct}/3 correct.</p>`;
+            if (correct === 3) {
+                result.innerHTML += '<p style="color: var(--accent-blue);">Perfect! You unlocked Day 6. <a href="../day6/">Go to Day 6</a></p>';
+            } else {
+                result.innerHTML += '<p style="color: var(--accent-red);">Try again!</p>';
+            }
+        }
+
+        function checkCheckpoint() {
+            const answer = document.querySelector('input[name="checkpoint"]:checked')?.value;
+            const result = document.getElementById('checkpoint-result');
+            if (!answer) {
+                result.innerHTML = '<p style="color: var(--accent-red);">Please select an answer!</p>';
+                return;
+            }
+            if (answer === 'b') {
+                result.innerHTML = '<p style="color: var(--accent-blue);">Correct! You can proceed to Part 2.</p>';
+                document.getElementById('nextBtn').style.display = 'inline-flex';
+            } else {
+                result.innerHTML = '<p style="color: var(--accent-red);">Not quite. Try again!</p>';
+            }
+        }
+
+        showPart(0);
+    </script>
+</body>
+</html>

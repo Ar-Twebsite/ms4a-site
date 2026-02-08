@@ -1,0 +1,1056 @@
+:root {
+    /* Tokyo Night / Deep Space Palette */
+    --bg-dark: #0f172a;
+    --bg-panel: #1e293b;
+    --accent-cyan: #38bdf8;
+    --accent-indigo: #818cf8;
+    --text-primary: #f8fafc;
+    --text-body: #e2e8f0;
+
+    /* Fonts */
+    --font-headers: 'VT323', monospace;
+    --font-body: 'Inter', sans-serif;
+
+    /* Effects */
+    --glass-bg: rgba(15, 23, 42, 0.85);
+    --glass-border: rgba(56, 189, 248, 0.2);
+    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+    --glow-text: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* =========================================
+   DESKTOP VIEW (>768px) - "Command Center"
+   ========================================= */
+#desktop-scene {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 70%);
+    position: relative;
+    overflow: hidden;
+    /* Ensure zoom doesn't overflow */
+}
+
+/* 
+    SCALING WRAPPER:
+    This element handles the responsive scaling (fitting 1920x1080 into the viewport).
+    It is controlled by JS (resizeScene).
+*/
+#scene-scaler {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: center center;
+    /* Transform set by JS */
+}
+
+/* 
+    INNER SCENE:
+    This element handles the ZOOM animations.
+    It sits inside the scaler. 
+    It is always 1920x1080.
+*/
+#scene-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: center center;
+    /* Default state is scale(1) translate(0,0) */
+}
+
+/* Objects Common */
+.object-wrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 10;
+}
+
+.object {
+    display: block;
+    max-width: 250px;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
+    transition: filter 0.3s ease;
+}
+
+/* Hover Effects */
+.object-wrapper:hover {
+    transform: translate(-50%, calc(-50% - 10px)) scale(1.05);
+    /* Lift */
+    z-index: 50;
+}
+
+.object-wrapper:hover .object {
+    filter: drop-shadow(0 0 20px var(--accent-cyan));
+}
+
+/* Projected Shadows (JS Generated) */
+.projected-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: brightness(0) blur(3px) opacity(0.3);
+    transform-origin: bottom center;
+    transform: scaleY(0.25) skewX(20deg) translateY(0px);
+    pointer-events: none;
+    z-index: -1;
+    /* Behind object */
+    transition: all 0.3s ease;
+}
+
+.object-wrapper:hover .projected-shadow {
+    /* Shadow moves away and blurs more as object lifts */
+    transform: scaleY(0.25) skewX(20deg) translateY(10px) scale(0.9);
+    filter: brightness(0) blur(5px) opacity(0.2);
+}
+
+/* --- SPECIFIC SHADOW ADAPTATIONS --- */
+
+/* 1. Remove Shadow from House */
+#house-wrapper .projected-shadow {
+    display: none;
+}
+
+/* 2. Desk Objects - Project Leftward only on desk surface */
+#laptop-wrapper .projected-shadow,
+#robot-wrapper .projected-shadow,
+#globe-wrapper .projected-shadow {
+    transform-origin: bottom center;
+    transform: scaleY(0.10) skewX(45deg) translateX(-20px) translateY(5px);
+    filter: brightness(0) blur(4px) opacity(0.25);
+}
+
+#laptop-wrapper:hover .projected-shadow,
+#robot-wrapper:hover .projected-shadow,
+#globe-wrapper:hover .projected-shadow {
+    transform: scaleY(0.15) skewX(45deg) translateX(-20px) translateY(5px) scale(0.85);
+}
+
+/* 3. Camera - Small subtle shadow on books */
+#camera-wrapper .projected-shadow {
+    transform: scale(0.4) scaleY(0.5) skewX(10deg) translateY(-175px);
+    filter: brightness(0) blur(2px) opacity(0.2);
+}
+
+#camera-wrapper:hover .projected-shadow {
+    transform: scale(0.55) scaleY(0.5) skewX(10deg) translateY(10px);
+}
+
+/* 4. Bin - Vertical shadow against inside of desk */
+#bin-wrapper .projected-shadow {
+    transform-origin: top center;
+    transform: scaleX(0.2) skewY(10deg) translateX(50px) translateY(-20px);
+    filter: brightness(0) blur(6px) opacity(0.2);
+}
+
+#bin-wrapper:hover .projected-shadow {
+    transform: scaleX(0.15) skewY(10deg) translateX(50px) translateY(-10px);
+}
+
+/* 5. Shelf Items Improvement (Quest, Calendar, F1, Books) */
+#quest-wrapper .projected-shadow,
+#calendar-wrapper .projected-shadow,
+#f1-wrapper .projected-shadow,
+#books-wrapper .projected-shadow {
+    transform: scaleY(0.09) skewX(45deg) translateY(-200px) translateX(255px);
+    filter: brightness(0) blur(2px) opacity(0.3);
+}
+
+/* Tooltip - Fixed Z-Index */
+.tooltip {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--accent-cyan);
+    font-family: var(--font-headers);
+    font-size: 20px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+    text-shadow: var(--glow-text);
+    z-index: 1000;
+    /* Ensure visibility */
+}
+
+.object-wrapper:hover .tooltip {
+    opacity: 1;
+}
+
+/* --- Coordinate Mapping (Refined Iteration 2) --- */
+
+/* FURNITURE */
+#desk {
+    position: absolute;
+    left: 50%;
+    top: 80%;
+    width: 80%;
+    /* 80% as requested */
+    max-width: none;
+    /* UNCAP THE WIDTH - Critical Fix */
+    z-index: 1;
+    transform: translate(-50%, -50%);
+}
+
+#shelf-left {
+    position: absolute;
+    left: 28%;
+    top: 38%;
+    width: 18%;
+    max-width: none;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+#shelf-right {
+    position: absolute;
+    left: 64%;
+    top: 20%;
+    width: 20%;
+    max-width: none;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+/* ITEMS */
+#laptop-wrapper {
+    left: 47%;
+    top: 61.5%;
+    z-index: 5;
+}
+
+#robot-wrapper {
+    left: 63%;
+    top: 49%;
+    z-index: 5;
+}
+
+#robot-wrapper .object {
+    transform: scale(0.9);
+    /* 10% Smaller */
+}
+
+#globe-wrapper {
+    left: 28%;
+    top: 56%;
+    z-index: 5;
+}
+
+#globe-wrapper .object {
+    max-width: 180px;
+}
+
+/* Camera & Books Stack */
+#books-wrapper {
+    left: 78%;
+    top: 60%;
+    z-index: 4;
+}
+
+#camera-wrapper {
+    left: 79%;
+    top: 51%;
+    /* Slightly lower */
+    z-index: 5;
+}
+
+#camera-wrapper .object {
+    transform: scale(0.5);
+    /* Smaller again */
+}
+
+/* Left Shelf Items */
+#quest-wrapper {
+    left: 25.5%;
+    top: 32%;
+    z-index: 2;
+}
+
+#quest-wrapper .object {
+    max-width: 160px;
+}
+
+#calendar-wrapper {
+    left: 33%;
+    top: 34%;
+    z-index: 2;
+}
+
+#calendar-wrapper .object {
+    max-width: 95px;
+    /* 5% Bigger (was 90px -> 94.5px) */
+}
+
+/* Right Shelf Items */
+#f1-wrapper {
+    left: 60%;
+    top: 18%;
+    z-index: 2;
+}
+
+#house-wrapper {
+    left: 69%;
+    top: 16%;
+    /* Slightly lower */
+    z-index: 2;
+}
+
+#house-wrapper .object {
+    transform: scale(0.5);
+    /* Smaller again */
+}
+
+#bin-wrapper {
+    left: 38%;
+    /* Halfway between Globe and Laptop */
+    top: 87%;
+    z-index: 10;
+}
+
+/* =========================================
+   WINDOW SYSTEM
+   ========================================= */
+#window-container {
+    position: absolute;
+    left: 55%;
+    /* Shifted right */
+    top: 42%;
+    /* Shifted lower */
+    width: 480px;
+    /* 20% smaller (from 600) */
+    height: 320px;
+    /* 20% smaller (from 400) */
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    /* Behind everything in #scene-inner */
+}
+
+.window-frame {
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    border: 12px solid #1e293b;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 50px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(56, 189, 248, 0.1);
+}
+
+/* Sky Background */
+.sky {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #0f172a, #1e1b4b, #312e81);
+    position: relative;
+    transition: background 2s ease;
+}
+
+/* Day Mode Sky */
+#window-container.day-mode .sky {
+    background: linear-gradient(to bottom, #38bdf8, #818cf8, #c084fc);
+}
+
+/* Celestial Body (Sun/Moon) */
+#celestial-body {
+    position: absolute;
+    /* Orbital Path Math */
+    /* Progress 0 to 1 becomes transition from left to right, and arc height */
+    left: calc(var(--celestial-progress) * 120% - 10%);
+    top: calc(80% - (sin(var(--celestial-progress) * 3.14) * 60%));
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    transition: background 2s ease, box-shadow 2s ease;
+
+    /* Disappearing effect (fade out at ends) */
+    opacity: calc(sin(var(--celestial-progress) * 3.14) * 1.5);
+    transform: scale(calc(0.5 + sin(var(--celestial-progress) * 3.14) * 0.5));
+}
+
+/* Night Mode: Moon */
+#window-container.night-mode #celestial-body {
+    background: #f1f5f9;
+    box-shadow: 0 0 20px rgba(248, 250, 252, 0.4);
+}
+
+/* Moon Crescent Effect */
+#window-container.night-mode #celestial-body::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: 50%;
+    background: linear-gradient(45deg, transparent 40%, #0f172a 40%);
+    display: none;
+    /* Keep it as a full moon for now unless requested otherwise */
+}
+
+/* Day Mode: Sun */
+#window-container.day-mode #celestial-body {
+    background: #fbbf24;
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.6);
+}
+
+/* Skyline */
+.skyline {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 0 20px;
+}
+
+.building {
+    background: #020617;
+    width: 60px;
+    position: relative;
+    transition: background 2s ease;
+}
+
+#window-container.day-mode .building {
+    background: #1e293b;
+}
+
+.b1 {
+    height: 80%;
+    width: 50px;
+}
+
+.b2 {
+    height: 100%;
+    width: 70px;
+}
+
+.b3 {
+    height: 60%;
+    width: 40px;
+}
+
+.b4 {
+    height: 90%;
+    width: 55px;
+}
+
+/* Building Windows (Lights) */
+.building::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    width: 60%;
+    height: 80%;
+    background-image: radial-gradient(circle, #fcd34d 1px, transparent 1px);
+    background-size: 8px 12px;
+    opacity: 0.3;
+}
+
+#window-container.day-mode .building::after {
+    opacity: 0.05;
+    /* Dimmer during the day */
+}
+
+@keyframes flicker {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    70% {
+        opacity: 0.2;
+    }
+}
+
+.building:nth-child(even)::after {
+    animation: flicker 4s infinite alternate;
+}
+
+/* Reflection on the desk? Subtle glow below window */
+#window-container::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    width: 400px;
+    height: 40px;
+    background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+#robot .object {
+    animation: float 4s ease-in-out infinite;
+}
+
+#quest .object {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes rock {
+    0% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+
+    100% {
+        transform: rotate(-5deg);
+    }
+}
+
+#globe-wrapper:hover .object {
+    animation: rock 4s ease-in-out infinite;
+}
+
+
+/* =========================================
+   MOBILE VIEW (<768px) - "FounderOS"
+   ========================================= */
+#mobile-os {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: #1a1a2e;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameboy-frame {
+    background: #2d3748;
+    width: 340px;
+    height: 600px;
+    border-radius: 20px 20px 40px 40px;
+    padding: 20px;
+    box-shadow:
+        inset 5px 5px 10px rgba(255, 255, 255, 0.05),
+        inset -5px -5px 10px rgba(0, 0, 0, 0.5),
+        0 20px 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.screen-bezel {
+    background: #57534e;
+    width: 100%;
+    height: 380px;
+    border-radius: 10px 10px 30px 10px;
+    padding: 20px 20px 40px 20px;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-headers);
+    color: #a8a29e;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.os-screen {
+    background: #0f172a;
+    flex-grow: 1;
+    border-radius: 4px;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    position: relative;
+    padding: 10px;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+#os-status-line {
+    font-family: var(--font-headers);
+    font-size: 12px;
+    color: var(--accent-cyan);
+    margin-top: 5px;
+    height: 15px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Grid Layout */
+#os-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: min-content;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    padding: 5px;
+    transition: background 0.1s;
+}
+
+.app-icon img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.app-icon span {
+    font-size: 9px;
+    font-family: var(--font-headers);
+    text-align: center;
+    line-height: 1.1;
+    color: #94a3b8;
+}
+
+.app-icon.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: var(--accent-cyan);
+}
+
+.app-icon.active span {
+    color: var(--accent-cyan);
+}
+
+/* Controls */
+.controls-area {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    /* Increased padding */
+    margin-top: 40px;
+    /* Moves controls down */
+}
+
+.d-pad {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.d-pad div {
+    position: absolute;
+    background: #171717;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+}
+
+.d-center {
+    top: 40px;
+    left: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+.d-up {
+    top: 0px;
+    left: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+.d-down {
+    bottom: 0px;
+    left: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+.d-left {
+    top: 40px;
+    left: 0px;
+    width: 40px;
+    height: 40px;
+}
+
+.d-right {
+    top: 40px;
+    right: 0px;
+    width: 40px;
+    height: 40px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    /* Align with D-Pad center visually */
+}
+
+.btn-a {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #ef4444;
+    border: none;
+    box-shadow: 3px 3px 0 #7f1d1d;
+    color: white;
+    font-family: var(--font-headers);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Removed Start/Select Styles */
+
+/* Intro Overlay */
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: opacity 1s ease;
+}
+
+#intro-overlay.hidden-overlay {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#intro-text h1 {
+    font-family: var(--font-headers);
+    font-size: 4rem;
+    color: var(--accent-cyan);
+    margin-bottom: 20px;
+}
+
+#intro-text p {
+    font-size: 1.5rem;
+    color: var(--text-body);
+}
+
+#intro-hint {
+    margin-top: 50px;
+    font-family: var(--font-headers);
+    color: var(--accent-indigo);
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border: 1px solid var(--accent-indigo);
+    border-radius: 4px;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+
+
+
+/* Shared Modal */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    /* Lighter bg, rely on blur */
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    /* Above everything */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    /* Sync with zoom */
+}
+
+#modal-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#modal-content {
+    background: rgba(15, 23, 42, 0.85);
+    /* Darker, more transparent */
+    border: 1px solid rgba(56, 189, 248, 0.5);
+    box-shadow:
+        0 0 50px rgba(56, 189, 248, 0.1),
+        inset 0 0 20px rgba(56, 189, 248, 0.05);
+    width: 90%;
+    max-width: 700px;
+    padding: 0;
+    /* Remove padding to handle header/body separation */
+    border-radius: 12px;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Clip children */
+    backdrop-filter: blur(16px);
+}
+
+#modal-overlay:not(.hidden) #modal-content {
+    transform: scale(1);
+}
+
+#modal-header {
+    background: rgba(56, 189, 248, 0.1);
+    padding: 20px 40px;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#modal-title {
+    font-family: var(--font-headers);
+    color: var(--accent-cyan);
+    font-size: 36px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    margin: 0;
+}
+
+#modal-close {
+    position: static;
+    /* Reset absolute */
+    background: none;
+    border: none;
+    color: var(--text-body);
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#modal-close:hover {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 8px var(--accent-cyan);
+}
+
+#modal-body-container {
+    padding: 40px;
+    max-height: 70vh;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* Custom Scrollbar */
+#modal-body-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#modal-body-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#modal-body-container::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.3);
+    border-radius: 4px;
+}
+
+#modal-body {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--text-primary);
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+#modal-body p {
+    margin-bottom: 1.2em;
+}
+
+/* Lightbox Styles */
+#lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#lightbox-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    text-align: center;
+}
+
+#lightbox-img {
+    max-width: 100%;
+    max-height: 80vh;
+    border: 2px solid var(--accent-cyan);
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+}
+
+#lightbox-caption {
+    margin-top: 15px;
+    color: var(--text-primary);
+    font-family: var(--font-headers);
+    font-size: 1.2rem;
+}
+
+#lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 40px;
+    cursor: pointer;
+    z-index: 3001;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-primary);
+    font-size: 30px;
+    padding: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 20px;
+    transition: background 0.2s;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#modal-cta {
+    display: inline-block;
+    background: var(--accent-indigo);
+    color: white;
+    padding: 12px 30px;
+    text-decoration: none;
+    font-family: var(--font-headers);
+    font-size: 18px;
+    border-radius: 4px;
+    box-shadow: 0 4px 0 #4338ca;
+    transition: transform 0.1s;
+}
+
+#modal-cta:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 transparent;
+}
+
+#modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-body);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    #desktop-scene {
+        display: none;
+    }
+
+    #mobile-os {
+        display: flex;
+    }
+}
