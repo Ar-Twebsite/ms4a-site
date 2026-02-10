@@ -12,6 +12,8 @@ function loadProjectsFromDOM() {
         const image = article.dataset.image;
         const ctaText = article.dataset.ctaText;
         const ctaLink = article.dataset.ctaLink;
+        const ctaText2 = article.dataset.ctaText2; // Secondary CTA
+        const ctaLink2 = article.dataset.ctaLink2; // Secondary CTA Link
         const type = article.dataset.type; // 'calendly' or 'gallery' or undefined
         const imagesRaw = article.dataset.images;
 
@@ -36,6 +38,8 @@ function loadProjectsFromDOM() {
             description,
             ctaText,
             ctaLink,
+            ctaText2,
+            ctaLink2,
             type,
             images
         });
@@ -56,7 +60,9 @@ const shortTitles = {
     "camera": "Portfolio",
     "books": "Magazine",
     "bin": "Failures",
-    "calendar": "Contact"
+    "calendar": "Contact",
+    "clapperboard": "Ciak Europa",
+    "cv": "My Resume"
 };
 
 
@@ -69,6 +75,7 @@ const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle = document.getElementById('modal-title');
 const modalBody = document.getElementById('modal-body');
 const modalCta = document.getElementById('modal-cta');
+const modalCtaSecondary = document.getElementById('modal-cta-secondary');
 const modalClose = document.getElementById('modal-close');
 
 // Lightbox DOM
@@ -123,10 +130,7 @@ function openModal(projectId) {
     modalBody.innerHTML = project.description;
 
     // Handle CTA Button Visibility
-    const ctaContainer = modalCta ? modalCta.parentElement : null;
-
-    if (project.ctaText) {
-        if (ctaContainer) ctaContainer.style.display = 'block';
+    if (project.ctaText && modalCta) {
         modalCta.style.display = 'inline-block';
         modalCta.textContent = project.ctaText;
 
@@ -141,8 +145,18 @@ function openModal(projectId) {
             modalCta.href = project.ctaLink;
             modalCta.onclick = null; // Reset click handler
         }
-    } else {
-        if (ctaContainer) ctaContainer.style.display = 'none';
+    } else if (modalCta) {
+        modalCta.style.display = 'none';
+    }
+
+    // Handle Secondary CTA Button (for projects with second CTA)
+    if (project.ctaText2 && modalCtaSecondary) {
+        modalCtaSecondary.textContent = project.ctaText2;
+        modalCtaSecondary.href = project.ctaLink2;
+        modalCtaSecondary.style.display = 'inline-block';
+        modalCtaSecondary.onclick = null; // Reset click handler
+    } else if (modalCtaSecondary) {
+        modalCtaSecondary.style.display = 'none';
     }
 
     // Show Modal (Instant)

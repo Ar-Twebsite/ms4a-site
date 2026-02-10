@@ -135,17 +135,39 @@ body {
 
 /* 2. Desk Objects - Project Leftward only on desk surface */
 #laptop-wrapper .projected-shadow,
-#robot-wrapper .projected-shadow,
-#globe-wrapper .projected-shadow {
+#robot-wrapper .projected-shadow {
     transform-origin: bottom center;
     transform: scaleY(0.10) skewX(45deg) translateX(-20px) translateY(5px);
     filter: brightness(0) blur(4px) opacity(0.25);
 }
 
 #laptop-wrapper:hover .projected-shadow,
-#robot-wrapper:hover .projected-shadow,
-#globe-wrapper:hover .projected-shadow {
+#robot-wrapper:hover .projected-shadow {
     transform: scaleY(0.15) skewX(45deg) translateX(-20px) translateY(5px) scale(0.85);
+}
+
+/* Globe shadow reduced to 1/15 */
+#globe-wrapper .projected-shadow {
+    transform-origin: bottom center;
+    transform: scaleY(0.0067) skewX(45deg) translateX(-20px) translateY(5px);
+    filter: brightness(0) blur(4px) opacity(0.0167);
+}
+
+#globe-wrapper:hover .projected-shadow {
+    transform: scaleY(0.01) skewX(45deg) translateX(-20px) translateY(5px) scale(0.85);
+}
+
+/* 2.5 New Desk Objects - Clapperboard & CV - Shadow closer to object */
+#clapperboard-wrapper .projected-shadow,
+#cv-wrapper .projected-shadow {
+    transform-origin: bottom center;
+    transform: scaleY(0.08) skewX(45deg) translateX(-15px) translateY(0px);
+    filter: brightness(0) blur(3px) opacity(0.2);
+}
+
+#clapperboard-wrapper:hover .projected-shadow,
+#cv-wrapper:hover .projected-shadow {
+    transform: scaleY(0.12) skewX(45deg) translateX(-15px) translateY(0px) scale(0.85);
 }
 
 /* 3. Camera - Small subtle shadow on books */
@@ -241,7 +263,7 @@ body {
 
 /* ITEMS */
 #laptop-wrapper {
-    left: 47%;
+    left: 50%;
     top: 61.5%;
     z-index: 5;
 }
@@ -258,7 +280,7 @@ body {
 }
 
 #globe-wrapper {
-    left: 28%;
+    left: 20%;
     top: 56%;
     z-index: 5;
 }
@@ -332,6 +354,22 @@ body {
     /* Halfway between Globe and Laptop */
     top: 87%;
     z-index: 10;
+}
+
+#clapperboard-wrapper {
+    left: 30%;
+    top: 59%;
+    z-index: 5;
+}
+
+#clapperboard-wrapper .object {
+        transform: scale(0.8);
+}
+
+#cv-wrapper {
+    left: 38.5%;
+    top: 60%;
+    z-index: 5;
 }
 
 /* =========================================
@@ -887,10 +925,11 @@ body {
 #modal-title {
     font-family: var(--font-headers);
     color: var(--accent-cyan);
-    font-size: 36px;
-    letter-spacing: 2px;
+    font-size: 40px;
+    font-weight: 900;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
     margin: 0;
 }
 
@@ -933,14 +972,136 @@ body {
 
 #modal-body {
     font-size: 18px;
-    line-height: 1.8;
+    line-height: 1.9;
     color: var(--text-primary);
     text-align: left;
     margin-bottom: 30px;
 }
 
 #modal-body p {
-    margin-bottom: 1.2em;
+    margin-bottom: 1.6em;
+}
+
+#modal-body p:first-child {
+    margin-top: 0;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+/* CTA Buttons Styling */
+#modal-buttons-container {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+#modal-buttons-container a {
+    display: inline-block;
+    padding: 14px 28px;
+    background: rgba(56, 189, 248, 0.1);
+    border: 2px solid rgba(56, 189, 248, 0.6);
+    color: var(--accent-cyan);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: var(--font-body);
+    cursor: pointer;
+}
+
+#modal-buttons-container a:hover {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    transform: translateY(-3px);
+}
+
+/* Primary button (Let's Meet) */
+#modal-cta-secondary {
+    background: rgba(129, 140, 248, 0.3);
+    border-color: var(--accent-indigo);
+    border-width: 2px;
+    color: var(--accent-indigo);
+    font-weight: 700;
+    font-size: 17px;
+    order: -1;
+    box-shadow: 0 0 8px rgba(129, 140, 248, 0.2);
+}
+
+#modal-cta-secondary:hover {
+    background: rgba(129, 140, 248, 0.4);
+    border-color: var(--accent-indigo);
+    box-shadow: 0 0 20px rgba(129, 140, 248, 0.5);
+    transform: translateY(-3px);
+}
+
+/* Secondary button (LinkedIn) */
+#modal-cta {
+    opacity: 0.8;
+}
+
+#modal-cta:hover {
+    opacity: 1;
+}
+
+/* CV-specific styling for better readability */
+#modal-body strong {
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+/* Section headers in CV */
+#modal-body p:has(> strong:first-child) {
+    margin-top: 1.5em;
+    margin-bottom: 0.6em;
+}
+
+/* Job title and date spans */
+#modal-body p strong:first-letter {
+    text-transform: uppercase;
+}
+
+/* Better spacing for experience entries */
+#modal-body > p:has(br) {
+    margin-bottom: 1.8em;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    #modal-body-container {
+        padding: 20px;
+        max-height: 85vh;
+    }
+    
+    #modal-body {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+    
+    #modal-body p {
+        margin-bottom: 1em;
+    }
+    
+    #modal-body p:has(> strong:first-child) {
+        margin-top: 1.2em;
+        margin-bottom: 0.5em;
+    }
+    
+    #modal-buttons-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    #modal-buttons-container a {
+        margin-left: 0 !important;
+        width: 100%;
+    }
 }
 
 /* Lightbox Styles */
